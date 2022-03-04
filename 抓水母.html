@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    /* *{
+      border: 1px solid #000;
+    } */
+    body,html{
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #game{
+      width: 600px;
+      height: 500px;
+      background: url('./image/background.jpg') no-repeat center center/cover;
+      cursor: url('./image/Jellyfish_net_stock_art-01.png') 10 10,auto;
+      overflow: hidden;
+    }
+    #game:active{
+      cursor: url('./image/Jellyfish_net_stock_art2-01.png') 10 10,auto;
+    }
+    .row{
+      width: 100%;
+      height: 80px;
+      position: relative;
+    }
+
+    .leftjully{
+      width: 60px;
+      
+      left: -20%;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+      position: absolute;
+      
+    }
+    .rightjully{
+      width: 60px;
+      
+      right: -20%;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+      position: absolute;
+      
+    }
+
+    #game img{
+      width: 60px;
+      
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none
+    }
+
+    @keyframes jullymove {
+      0%{
+        left: -20%;
+      }
+      100%{
+        left: 110%;
+      }
+      0%{
+        top: 50px;
+      }
+      25%{
+        top: 30%;
+      }
+      50%{
+        top: 80%;
+      }
+      75%{
+        top: 30%;
+      }
+      100%{
+        top: 50%;
+      }
+      
+    }
+
+    @keyframes jullyrmove {
+      0%{
+        right: -20%;
+      }
+      100%{
+        right: 110%;
+      }
+      0%{
+        top: 50px;
+      }
+      25%{
+        top: 30%;
+      }
+      50%{
+        top: 80%;
+      }
+      75%{
+        top: 30%;
+      }
+      100%{
+        top: 50%;
+      }
+      
+    }
+    .move{
+      display: block;
+      animation: jullymove 8s ;
+    }
+
+    .rmove{
+      display: block;
+      animation: jullyrmove 8s ;
+    }
+
+    #gamestart{
+      position: absolute;
+      width: 250px;
+      height: 220px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+
+    }
+
+
+    #gamestart img{
+      width: 250px;
+    }
+    #start{
+      border: none;
+      background: none;
+      font-size: 50px;
+      position: absolute;
+      bottom: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: yellow;
+      
+    }
+
+    #start:hover{
+      cursor: url('./image/Jellyfish_net_stock_art2-01.png') 10 10,auto;
+      color: orange;
+      
+    }
+
+    .scoreblock{
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    </style>
+</head>
+<body>
+  <div id="game">
+    <img src="./image/jullyfish.png" alt=""><span id="score">0</span>
+      
+    
+    <div class="row">
+      <div class="jully leftjully" id="jully1">
+        <img src="./image/jullyfish.png" >
+      </div>
+      <div class="jully rightjully" id="jully7">
+        <img src="./image/jullyfish.png" >
+      </div>
+    </div>
+    <div class="row">
+      <div class="jully leftjully" id="jully2">
+        <img src="./image/jullyfish.png" >
+      </div>
+      <div class="jully rightjully" id="jully8">
+        <img src="./image/jullyfish.png" >
+      </div>
+    </div>
+    <div class="row">
+      <div class="jully leftjully"  id="jully3">
+        <img src="./image/jullyfish.png" >
+      </div>
+      <div class="jully rightjully" id="jully9">
+        <img src="./image/jullyfish.png" >
+      </div>
+    </div>
+    <div class="row">
+      <div class="jully leftjully"  id="jully4">
+        <img src="./image/jullyfish.png" >
+      </div>
+      <div class="jully rightjully" id="jully10">
+        <img src="./image/jullyfish.png" >
+      </div>
+    </div>
+    <div class="row">
+      <div class="jully leftjully"  id="jully5">
+        <img src="./image/jullyfish.png" >
+      </div>
+      <div class="jully rightjully" id="jully11">
+        <img src="./image/jullyfish.png" >
+      </div>
+    </div>
+    
+    <div id="gamestart">
+      <img src="./image/SpongeBob_SquarePants_logo_wordmark.png" alt="">
+      <input type="button" value="start" id="start">
+      <div class="scoreblock">
+        
+        
+        最高分
+        
+        玩家：<span id="highname">???</span>
+        分數：<span id="highscore">0</span>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    const start = document.getElementById('start')
+    const scoreText = document.getElementById('score')
+    const leftjullys = document.getElementsByClassName('leftjully')
+    const rightjullys = document.getElementsByClassName('rightjully')
+    const highnameText = document.getElementById('highname')
+    const highscoreText = document.getElementById('highscore')
+    const gamestart = document.getElementById('gamestart')
+
+    const high = { score: 0, name: '???' }
+    // 計分
+    let score = 0
+    // 計時器
+    let timer = 0
+
+    // 讀取資料
+    const storage = JSON.parse(localStorage.getItem('jullyfish'))
+    // 如果有資料
+    if (storage) {
+      high.name = storage.name
+      high.score = storage.score
+      // 修改最高分顯示文字
+      highnameText.innerText = high.name
+      highscoreText.innerText = high.score
+    }
+
+    start.onclick = () => {
+
+      gamestart.style.display = "none"
+      // 停用開始按鈕
+      start.disabled = true
+      // 重設分數
+      score = 0
+      scoreText.innerText = score
+      // 每秒變換一次
+      timer = setInterval(game, 9000)
+      game()
+      // 十秒後遊戲結束
+      setTimeout(end, 60 * 1000)
+    }
+
+    game = () => {
+      for (const leftjully of leftjullys) {
+        leftjully.classList.remove('move')
+        
+      }
+      leftjullys[Math.round(Math.random()*(leftjullys.length - 1))].classList.add('move')
+    
+      for (const rightjully of rightjullys) {
+          rightjully.classList.remove('rmove')
+          
+        }
+        rightjullys[Math.round(Math.random()*(rightjullys.length - 1))].classList.add('rmove')
+      }  
+
+    for (const leftjully of leftjullys) {
+      leftjully.onclick = () => {
+        // 如果點下去時是move
+        if (leftjully.classList.contains('move')) {
+          // remove
+          leftjully.classList.remove('move')
+          // 加分
+          score++
+          scoreText.innerText = score
+        }
+      }
+    }
+
+    for (const rightjully of rightjullys) {
+      rightjully.onclick = () => {
+        // 如果點下去時是move
+        if (rightjully.classList.contains('rmove')) {
+          // remove
+          rightjully.classList.remove('rmove')
+          // 加分
+          score++
+          scoreText.innerText = score
+        }
+      }
+    }
+
+    const end = () => {
+      gamestart.style.display = "block"
+      // 停止變換顏色
+      clearInterval(timer)
+      // 把顏色清掉
+      for (const leftjully of leftjullys) {
+        leftjully.classList.remove('move')
+      }
+      for (const rightjully of rightjullys) {
+        rightjully.classList.remove('rmove')
+      }
+      // 啟用開始按鈕
+      start.disabled = false
+      // 跳出訊息
+      alert(`遊戲結束，你得到 ${score} 分`)
+      // 紀錄最高分
+      if (score > high.score) {
+        
+        // 請玩家輸入名字
+        const input = prompt('最高分，請輸入名字')
+        // 修改最高分變數資料
+        high.score = score
+        high.name = input || '???'
+        // 修改最高分顯示文字
+        highnameText.innerText = high.name
+        highscoreText.innerText = high.score
+        // 保存
+        // localStorage.setItem(資料名, 文字)
+        // 變數轉文字：JSON.stringify(變數)
+        localStorage.setItem('jullyfish', JSON.stringify(high))
+      }
+    }
+    </script>
+</body>
+</html>
